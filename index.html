@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画面キャプチャ</title>
+</head>
+<body>
+    <h1>画面キャプチャ</h1>
+    <button id="startCapture">キャプチャ開始</button>
+    <button id="stopCapture">キャプチャ停止</button>
+    <video id="video" autoplay playsinline style="width: 100%; height: auto; border: 1px solid black;"></video>
+
+    <script>
+        const startCaptureButton = document.getElementById('startCapture');
+        const stopCaptureButton = document.getElementById('stopCapture');
+        const videoElement = document.getElementById('video');
+        let captureStream = null;
+
+        startCaptureButton.addEventListener('click', async () => {
+            try {
+                captureStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: false
+                });
+                videoElement.srcObject = captureStream;
+            } catch (err) {
+                console.error("Error: " + err);
+            }
+        });
+
+        stopCaptureButton.addEventListener('click', () => {
+            let tracks = captureStream.getTracks();
+            tracks.forEach(track => track.stop());
+            videoElement.srcObject = null;
+        });
+    </script>
+</body>
+</html>
